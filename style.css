@@ -1,19 +1,15 @@
 body{
-font-family:Arial;
-text-align:center;
-margin-top:100px;
+    font-family: Arial;
+    text-align:center;
+    margin-top:100px;
+    background:#f2f2f2;
 }
 
-input{
-padding:10px;
-width:250px;
+h1{
+    color:blue;
 }
 
 button{
-padding:10px;
-}
-
-p{
-font-size:20px;
-color:blue;
+    padding:10px 20px;
+    font-size:18px;
 }
