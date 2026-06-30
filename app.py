@@ -1,49 +1,23 @@
-from flask import Flask, render_template, request
-import sqlite3
+from flask import Flask, render_template, request, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder="templates",static_folder="static")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+responses = {
+    "hello": "Hi! How can I help you?",
+    "bye": "Goodbye!",
+    "python": "Python is a programming language.",
+    "cloud": "Cloud Computing provides computing services over the internet."
+}
 
-    message = ""
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-    conn = sqlite3.connect("database.db")
-    cursor = conn.cursor()
-
-    if request.method == "POST":
-
-        name = request.form["name"]
-        email = request.form["email"]
-        phone = request.form["phone"]
-
-        cursor.execute(
-            "SELECT * FROM users WHERE email=? OR phone=?",
-            (email, phone)
-        )
-
-        data = cursor.fetchone()
-
-        if data:
-            message = "Duplicate Record Found!"
-
-        else:
-            cursor.execute(
-                "INSERT INTO users(name,email,phone) VALUES(?,?,?)",
-                (name, email, phone)
-            )
-
-            conn.commit()
-            message = "Record Saved Successfully!"
-
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
-
-    conn.close()
-
-    return render_template("index.html",
-                           users=users,
-                           message=message)
+@app.route("/chat", methods=["POST"])
+def chat():
+    message = request.json["message"].lower()
+    reply = responses.get(message, "Sorry, I don't understand.")
+    return jsonify({"reply": reply})
 
 if __name__ == "__main__":
     app.run(debug=True)
